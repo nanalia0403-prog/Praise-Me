@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff89ad" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Praise Me!</title>
+  <style>
+    :root{
+      --pink:#ff7fa8;
+      --purple:#8b72ff;
+      --ink:#41364f;
+      --muted:#7b7088;
+      --card:rgba(255,255,255,.88);
+      --shadow:0 16px 38px rgba(85,61,111,.17);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%,rgba(255,255,255,.9) 0 5%,transparent 6%),
+        radial-gradient(circle at 90% 12%,rgba(255,255,255,.7) 0 7%,transparent 8%),
+        linear-gradient(150deg,#ffe1eb,#eee8ff 52%,#ddf5ff);
+      display:flex;
+      justify-content:center;
+      padding:18px 16px 44px;
+      overflow-x:hidden;
+    }
+    .app{width:min(100%,520px)}
+    .hero{text-align:center;padding:10px 8px 4px}
+    .mini-badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:var(--shadow);
+      color:var(--purple);
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.1em;
+    }
+    h1{
+      margin:15px 0 4px;
+      font-size:clamp(40px,11vw,64px);
+      line-height:1;
+      text-shadow:0 5px 0 #fff;
+    }
+    h1 span{color:var(--pink)}
+    .subtitle{margin:8px 0 0;color:var(--muted)}
+    .card{
+      margin-top:16px;
+      padding:18px;
+      border-radius:26px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.9);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+    }
+    .label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:900;
+      font-size:15px;
+    }
+    .row{display:flex;gap:10px}
+    input{
+      width:100%;
+      min-width:0;
+      border:2px solid #f0dce5;
+      border-radius:17px;
+      padding:14px 15px;
+      background:#fff;
+      color:var(--ink);
+      font-size:16px;
+      outline:none;
+    }
+    input:focus{border-color:var(--pink)}
+    button{
+      font-family:inherit;
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+    .save-name,.add-btn{
+      flex:0 0 auto;
+      border:0;
+      border-radius:17px;
+      padding:0 18px;
+      background:var(--purple);
+      color:#fff;
+      font-size:16px;
+      font-weight:900;
+    }
+    .praise-card{
+      min-height:190px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .emoji{font-size:44px;margin-bottom:6px}
+    #praiseText{
+      margin:0;
+      max-width:430px;
+      font-size:25px;
+      line-height:1.4;
+      font-weight:950;
+      animation:pop .45s ease;
+    }
+    .hint{margin:10px 0 0;color:var(--muted);font-size:13px}
+    @keyframes pop{
+      0%{transform:scale(.72);opacity:0}
+      70%{transform:scale(1.07)}
+      100%{transform:scale(1);opacity:1}
+    }
+    .praise-btn{
+      width:100%;
+      margin-top:14px;
+      padding:18px;
+      border:0;
+      border-radius:22px;
+      background:linear-gradient(135deg,var(--pink),#ff638f 55%,var(--purple));
+      box-shadow:0 11px 25px rgba(255,99,143,.32);
+      color:#fff;
+      font-size:21px;
+      font-weight:950;
+    }
+    .voice-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:12px;
+      font-size:14px;
+      color:var(--muted);
+    }
+    .sound-toggle{
+      border:0;
+      border-radius:999px;
+      padding:9px 13px;
+      background:#f0ebff;
+      color:var(--purple);
+      font-weight:900;
+    }
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .section-head h2{font-size:19px;margin:0}
+    .counter{
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f1edff;
+      color:var(--purple);
+      font-size:13px;
+      font-weight:800;
+    }
+    ul{list-style:none;padding:0;margin:14px 0 0}
+    li{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      margin-top:10px;
+      border:1px solid #f0e5ec;
+      border-radius:18px;
+      background:#fff;
+      transition:.25s;
+    }
+    li.done{opacity:.65;background:#f1fff5}
+    li.done .task-text{text-decoration:line-through}
+    .check-btn{
+      flex:0 0 auto;
+      width:30px;height:30px;
+      border-radius:50%;
+      border:2px solid var(--pink);
+      background:#fff;
+      color:#fff;
+      font-weight:900;
+    }
+    li.done .check-btn{background:#54cc81;border-color:#54cc81}
+    .task-text{flex:1;font-weight:750;word-break:break-word;text-align:left}
+    .delete-btn{
+      border:0;
+      background:transparent;
+      color:#b09ba8;
+      font-size:19px;
+      padding:5px;
+    }
+    .footer{
+      text-align:center;
+      color:#8c8097;
+      font-size:12px;
+      margin-top:18px;
+    }
+    .spark{
+      position:fixed;
+      z-index:999;
+      pointer-events:none;
+      font-size:25px;
+      animation:fly 1.25s ease-out forwards;
+    }
+    @keyframes fly{
+      from{transform:translateY(0) scale(.7) rotate(0);opacity:1}
+      to{transform:translateY(-135px) scale(1.55) rotate(28deg);opacity:0}
+    }
+    @media (max-width:380px){
+      .row{gap:7px}
+      .save-name,.add-btn{padding:0 13px}
+      #praiseText{font-size:22px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="mini-badge">DAILY PRAISE GAME</div>
+      <h1><span>Praise</span> Me!</h1>
+      <p class="subtitle">Every small win deserves to be celebrated.</p>
+    </header>
+
+    <section class="card">
+      <label class="label" for="nameInput">Who would you like to praise?</label>
+      <div class="row">
+        <input id="nameInput" maxlength="24" placeholder="Enter a name, for example Jamie" />
+        <button class="save-name" id="saveNameBtn">Save</button>
+      </div>
+    </section>
+
+    <section class="card praise-card">
+      <div class="emoji" id="emoji">🌟</div>
+      <p id="praiseText">Enter a name and get ready for some encouragement!</p>
+      <p class="hint">Tap the button for a new random compliment.</p>
+      <div class="voice-row">
+        <span>Voice praise is turned on.</span>
+        <button class="sound-toggle" id="soundToggle">🔊 Sound On</button>
+      </div>
+    </section>
+
+    <button class="praise-btn" id="praiseBtn">💖 Praise Me Now</button>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Today's To-Do List</h2>
+        <div class="counter" id="counter">0 / 0 done</div>
+      </div>
+      <div class="row">
+        <input id="todoInput" maxlength="80" placeholder="Example: Study 20 questions" />
+        <button class="add-btn" id="addBtn">Add</button>
+      </div>
+      <ul id="todoList"></ul>
+    </section>
+
+    <div class="footer">Your effort matters, even when nobody else sees it. ✨</div>
+  </main>
+
+  <script>
+    const praiseTemplates = [
+      "{name}, you are doing an amazing job!",
+      "{name}, you made real progress today!",
+      "Great work, {name}! Your effort is paying off.",
+      "{name}, you should be proud of yourself!",
+      "Amazing, {name}! You are stronger than you think.",
+      "{name}, you are focused, capable, and determined.",
+      "Excellent job, {name}! You made today count.",
+      "{name}, you are building something great one step at a time.",
+      "You did it, {name}! That is worth celebrating.",
+      "{name}, your hard work is truly impressive.",
+      "Keep going, {name}! You are doing better than you realize.",
+      "{name}, you handled that beautifully.",
+      "Fantastic work, {name}! Your consistency is powerful.",
+      "{name}, you are becoming better every single day.",
+      "Bravo, {name}! You showed real discipline today.",
+      "{name}, you deserve credit for every step you take.",
+      "You are incredible, {name}! Keep believing in yourself.",
+      "{name}, that was a wonderful accomplishment.",
+      "Great job, {name}! You are absolutely crushing it.",
+      "{name}, you are smart, capable, and unstoppable.",
+      "Way to go, {name}! Another win for you.",
+      "{name}, your effort today is something to be proud of.",
+      "You are doing wonderfully, {name}.",
+      "{name}, you showed up for yourself today, and that matters.",
+      "Outstanding, {name}! You deserve a big round of applause."
+    ];
+
+    const completionTemplates = [
+      "{name}, you completed a task! Great job!",
+      "Task complete! {name}, you really followed through.",
+      "{name}, another win! Your progress looks amazing.",
+      "Well done, {name}! You are so reliable.",
+      "{name}, you just proved that you can do it.",
+      "You finished it, {name}! That deserves a celebration.",
+      "Excellent work, {name}! Your action is impressive.",
+      "{name}, your productivity is on fire today!"
+    ];
+
+    const emojis = ["🌟","💖","🎉","✨","🏆","🌈","👏","🥳","💐","👑","💪","🫶"];
+
+    const nameInput = document.getElementById("nameInput");
+    const praiseText = document.getElementById("praiseText");
+    const praiseBtn = document.getElementById("praiseBtn");
+    const saveNameBtn = document.getElementById("saveNameBtn");
+    const soundToggle = document.getElementById("soundToggle");
+    const emoji = document.getElementById("emoji");
+    const todoInput = document.getElementById("todoInput");
+    const addBtn = document.getElementById("addBtn");
+    const todoList = document.getElementById("todoList");
+    const counter = document.getElementById("counter");
+
+    let currentName = localStorage.getItem("praiseName") || "";
+    let todos = JSON.parse(localStorage.getItem("praiseTodos") || "[]");
+    let soundOn = localStorage.getItem("praiseSound") !== "off";
+    let lastPraiseIndex = -1;
+
+    if (currentName) nameInput.value = currentName;
+    updateSoundButton();
+
+    function safeName() {
+      return currentName.trim() || "You";
+    }
+
+    function randomItem(arr) {
+      let index;
+      do {
+        index = Math.floor(Math.random() * arr.length);
+      } while (arr.length > 1 && index === lastPraiseIndex);
+      lastPraiseIndex = index;
+      return arr[index];
+    }
+
+    function speak(text) {
+      if (!soundOn || !("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.95;
+      utterance.pitch = 1.08;
+      utterance.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const preferred =
+        voices.find(v => v.lang === "en-US" && /Samantha|Ava|Jenny|Aria|Google US English/i.test(v.name)) ||
+        voices.find(v => v.lang.startsWith("en-US")) ||
+        voices.find(v => v.lang.startsWith("en"));
+      if (preferred) utterance.voice = preferred;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function showPraise(source) {
+      const text = randomItem(source).replaceAll("{name}", safeName());
+      praiseText.style.animation = "none";
+      void praiseText.offsetWidth;
+      praiseText.textContent = text;
+      praiseText.style.animation = "pop .45s ease";
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      makeSparkles();
+      speak(text);
+      if ("vibrate" in navigator) navigator.vibrate(35);
+    }
+
+    function makeSparkles() {
+      const icons = ["✨","💖","⭐","🌸","🎉"];
+      for (let i = 0; i < 10; i++) {
+        const s = document.createElement("div");
+        s.className = "spark";
+        s.textContent = icons[Math.floor(Math.random() * icons.length)];
+        s.style.left = (15 + Math.random() * 70) + "vw";
+        s.style.top = (45 + Math.random() * 30) + "vh";
+        s.style.animationDelay = (Math.random() * .18) + "s";
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 1500);
+      }
+    }
+
+    function saveName() {
+      currentName = nameInput.value.trim();
+      localStorage.setItem("praiseName", currentName);
+      showPraise(praiseTemplates);
+      nameInput.blur();
+    }
+
+    function updateSoundButton() {
+      soundToggle.textContent = soundOn ? "🔊 Sound On" : "🔇 Sound Off";
+    }
+
+    function toggleSound() {
+      soundOn = !soundOn;
+      localStorage.setItem("praiseSound", soundOn ? "on" : "off");
+      updateSoundButton();
+      if (soundOn) speak("Voice praise is now on.");
+      else window.speechSynthesis?.cancel();
+    }
+
+    function saveTodos() {
+      localStorage.setItem("praiseTodos", JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      todoList.innerHTML = "";
+      todos.forEach((todo, index) => {
+        const li = document.createElement("li");
+        if (todo.done) li.classList.add("done");
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = todo.done ? "✓" : "";
+        check.setAttribute("aria-label", "Complete task");
+        check.onclick = () => {
+          const wasDone = todos[index].done;
+          todos[index].done = !todos[index].done;
+          saveTodos();
+          renderTodos();
+          if (!wasDone) showPraise(completionTemplates);
+        };
+
+        const text = document.createElement("div");
+        text.className = "task-text";
+        text.textContent = todo.text;
+
+        const del = document.createElement("button");
+        del.className = "delete-btn";
+        del.textContent = "×";
+        del.setAttribute("aria-label", "Delete task");
+        del.onclick = () => {
+          todos.splice(index, 1);
+          saveTodos();
+          renderTodos();
+        };
+
+        li.append(check, text, del);
+        todoList.appendChild(li);
+      });
+
+      const done = todos.filter(t => t.done).length;
+      counter.textContent = `${done} / ${todos.length} done`;
+    }
+
+    function addTodo() {
+      const text = todoInput.value.trim();
+      if (!text) return;
+      todos.unshift({ text, done:false });
+      todoInput.value = "";
+      saveTodos();
+      renderTodos();
+      todoInput.focus();
+    }
+
+    saveNameBtn.addEventListener("click", saveName);
+    praiseBtn.addEventListener("click", () => showPraise(praiseTemplates));
+    soundToggle.addEventListener("click", toggleSound);
+    addBtn.addEventListener("click", addTodo);
+
+    nameInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") saveName();
+    });
+    todoInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") addTodo();
+    });
+
+    window.speechSynthesis?.getVoices();
+    renderTodos();
+  </script>
+</body>
+</html>
